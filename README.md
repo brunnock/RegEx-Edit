@@ -4,6 +4,6 @@ This is an SPA which allows you to enter text and test regular expressions and m
 
 It uses React and no other libraries.
 
-Download and install with 'npm install'.
+Download and install with ```npm install```.
 
-Test with 'npm run dev' and build with 'npm run build'.
+Test with ```npm run dev``` and build with ```npm run build```.
