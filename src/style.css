@@ -1,0 +1,45 @@
+#root>div {
+    margin:1em;
+}
+
+#IO {
+    display:flex;
+    height:80vh;
+}
+
+textarea, pre {
+    border:1px solid #000;
+    margin:0;
+    padding:2px;
+    font-size:1em;
+    overflow:scroll;
+    white-space: pre-wrap;
+    resize: horizontal;
+    width:50%;
+}
+
+pre,iframe {
+}
+
+#regexDIV {
+    display:flex;
+    justify-content:space-around;
+}
+
+.buttonsDIV {
+    text-align:center;
+}
+
+.buttonsDIV button, .buttonsDIV label {
+    margin:0 1ex;
+}
+
+label {
+    font-weight:bold;
+}
+
+label abbr {
+    color:red;
+    font-size:90%;
+    padding-left:.5ex;
+}
