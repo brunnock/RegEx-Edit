@@ -91,6 +91,7 @@ function reducer(state2, action) {
   case 'extract':
     regex = new RegExp(state.regex, state.flags);
     state.extractions = state.input.match(regex).join("\n");
+    state.output='';
     if (state.extractions?.length>0) 
       state.outputDisplay = state.input.match(regex).join("<br />");
     break;
@@ -112,6 +113,8 @@ function reducer(state2, action) {
     } else {
       state.outputDisplay = input.replace(regex, '');
     }
+
+    state.extractions='';
     
     break;
 
