@@ -103,6 +103,9 @@ function App() {
 	{state.output.length>1 &&
 	 <button onClick={()=>dispatch({type:'useReplacements'})}>Use replacements</button>}
 	
+	{state?.extractions?.length>1 &&
+	 <button onClick={()=>dispatch({type:'useExtractions'})}>Use extractions</button>}
+	
       </div>
       
       <div className='buttonsDIV'>

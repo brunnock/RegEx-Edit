@@ -83,13 +83,15 @@ function reducer(state2, action) {
     if (state.input.length>0 && state.regex.length>0) {
       state.showMatches=true;
       showMatches();
+    } else {
+      state.showMatches=false;
     }
     break;
 
   case 'extract':
-    matches = state.input.match(regex);
     regex = new RegExp(state.regex, state.flags);
-    if (matches?.length>0) 
+    state.extractions = state.input.match(regex).join("\n");
+    if (state.extractions?.length>0) 
       state.outputDisplay = state.input.match(regex).join("<br />");
     break;
 
@@ -116,6 +118,15 @@ function reducer(state2, action) {
   case 'useReplacements':
     state.input = state.output;
     state.output=state.outputDisplay='';
+    state.regex='';
+    state.replacement='';
+    state.showMatches=false;
+    break;
+
+  case 'useExtractions':
+    state.input = state.extractions;
+    state.extractions=state.output=state.outputDisplay='';
+    state.regex='';
     state.replacement='';
     state.showMatches=false;
     break;
@@ -126,6 +137,7 @@ function reducer(state2, action) {
 
   case 'setInput':
     state.input = action.data;
+    state.matches='';
     state.showMatches=false;
     break;
     
