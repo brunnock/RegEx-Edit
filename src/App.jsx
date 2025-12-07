@@ -12,17 +12,40 @@ function App() {
     if (file) {
       let reader = new FileReader();
       reader.readAsText(file);
-      reader.onload = (e) => setData('input', e.target.result);
+      reader.onload = (e) => dispatch({type:'setInput', data:e.target.result})
     }
   }
 
+  function getURL () {
+    let url = prompt('Enter URL-');
+    if (url) {
+      fetch(url)
+	.then(response => {
+	  if (!response.ok) throw ('Unable to fetch text.');
+	  return response.text();
+	})
+	.then(fetchedText => dispatch({type:'setInput', data:fetchedText}))
+	.catch(err=> alert(err.toString()))
+    }
+  }
+      
   React.useEffect( ()=>dispatch({type:'updateMatches'}), [state.regex, state.flags] );
-  React.useEffect( ()=>dispatch({type:'updateFlags'}), [state.global, state.insensitive, state.dotall] );
+  React.useEffect( ()=>dispatch({type:'updateFlags'}), [state.global, state.insensitive, state.dotall, state.multiline] );
 
   return (
     <>
+      
+      <div id='topButtons'>
+	<button onClick={getURL}>Fetch URL</button>
+	{' or '}
+	<input type="file" id="file-input" onChange={handleFile} />
+	<label>
+          Render HTML<input type="checkbox" name="htmlCheckbox" value={state.renderHTML} onChange={e=>setData('renderHTML', e.target.checked)} />
+	</label>
+      </div>
+      
       <div id='IO'>
-	{state.showMatches ?
+	{(state.showMatches) ?
 	 <pre id='matchesPRE' dangerouslySetInnerHTML={{ __html: state.matches }} />
 	 :
 	 <textarea value={state.input} 
@@ -30,10 +53,10 @@ function App() {
                    onChange={e=>setData('input', e.target.value)} />
 	}
 
-	{state.showHTML ?
+	{state.renderHTML ?
 	 <iframe srcDoc={state.output} />
 	 :
-	 <pre id='outputPRE' dangerouslySetInnerHTML={{ __html: state.output }} />
+	 <pre id='outputPRE' dangerouslySetInnerHTML={{ __html: state.outputDisplay }} />
 	 
 	}
       </div>
@@ -54,9 +77,7 @@ function App() {
       
       <div className='buttonsDIV'>
 
-	<input type="file" id="file-input" onChange={handleFile} />
-
-	{state.showMatches ?
+	{(state.showMatches) ?
 	 <button onClick={()=>dispatch({type:'edit'})}>Edit</button>
 	 :
 	 <button onClick={()=>dispatch({type:'match'})}>Match</button>
@@ -66,7 +87,7 @@ function App() {
 	<button onClick={()=>dispatch({type:'replace'})}>Replace</button>
 
 	{state.output.length>1 &&
-	 <button onClick={()=>dispatch({type:'save'})}>Save</button>}
+	 <button onClick={()=>dispatch({type:'save', sessionID:sessionStorage.length+1})}>Save</button>}
 
 	{state.buffers.length>0 &&
 	 <>

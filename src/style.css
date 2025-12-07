@@ -1,13 +1,23 @@
-#root>div {
-    margin:1em;
+div {
+    margin: 1em 0;
+}
+
+#topButtons {
+    margin:0;
+}
+
+#topButtons label {
+    position: absolute;
+  left: 70%; 
 }
 
 #IO {
     display:flex;
     height:80vh;
+    margin-top:1ex;
 }
 
-textarea, pre {
+textarea, pre, iframe {
     border:1px solid #000;
     margin:0;
     padding:2px;
@@ -16,9 +26,6 @@ textarea, pre {
     white-space: pre-wrap;
     resize: horizontal;
     width:50%;
-}
-
-pre,iframe {
 }
 
 #regexDIV {

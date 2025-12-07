@@ -5,13 +5,13 @@ function init () {
     regex:'',
     replacement:'',
     regexError:null,
-    flags:'gi',
+    flags:'gim',
     showMatches:false,
-    showHTML:false,
+    renderHTML:false,
     global:true,
     insensitive:true,
     dotall:false,
-    multiline:false,
+    multiline:true,
     buffers:Object.keys(sessionStorage),
     buffer:Object.keys(sessionStorage)[0],
   };
@@ -19,13 +19,23 @@ function init () {
 
 
 function reducer(state2, action) {
+  //console.log(action);
   let state = structuredClone(state2);
+  let input=null;
   let regex=null;
+  let flags='';
+  let matches = null;
 
   function showMatches() {
+    // FIX!
     try {
-      regex = new RegExp(`(${state.regex})`, state.flags);
-      state.matches = state.input.replace(regex, '<mark>$1</mark>');
+      // replace < in regex with &lt;
+      input = state.input.replace(/&/g, '&amp;'); // escape the &
+      input = input.replace(/</g, '&lt;'); // escape the <
+
+      regex = state.regex.replace(/</g, '&lt;');
+      regex = new RegExp(`(${regex})`, state.flags);
+      state.matches = input.replace(regex, '<mark>$1</mark>');
       state.regexError=null;
     } catch (err) {
       state.regexError = err.toString();
@@ -51,7 +61,8 @@ function reducer(state2, action) {
     
   case 'save':
     // save state.output to sessionStorage
-    sessionStorage.setItem(sessionStorage.length+1, state.output);
+    //sessionStorage.setItem(sessionStorage.length+1, state.output);
+    sessionStorage.setItem(action.sessionID, state.output);
     state.buffers = Object.keys(sessionStorage);
     break;
     
@@ -61,7 +72,6 @@ function reducer(state2, action) {
     break;
 
   case 'updateFlags':
-    let flags='';
     flags += (state.global ? 'g' : '');
     flags += (state.insensitive ? 'i' : '');
     flags += (state.dotall ? 's' : '');
@@ -70,25 +80,42 @@ function reducer(state2, action) {
     break;
 
   case 'updateMatches':
-    state.showMatches=true;
-    showMatches();
+    if (state.input.length>0 && state.regex.length>0) {
+      state.showMatches=true;
+      showMatches();
+    }
     break;
 
   case 'extract':
+    matches = state.input.match(regex);
     regex = new RegExp(state.regex, state.flags);
-    let matches = state.input.match(regex);
     if (matches?.length>0) 
-      state.output = state.input.match(regex).join("<br />");
+      state.outputDisplay = state.input.match(regex).join("<br />");
     break;
 
   case 'replace':
+    // the following 2 lines do a straightforward replacement
     regex = new RegExp(state.regex, state.flags);
     state.output = state.input.replace(regex, state.replacement);
+
+    // for outputDisplay, neuter the HTML
+    input = state.input.replace(/&/g, '&amp;'); // escape the &
+    input = input.replace(/</g, '&lt;'); // escape the <
+    regex = state.regex.replace(/</g, '&lt;');
+    regex = new RegExp(`(${regex})`, state.flags);
+    if (state.replacement.length>0) {
+      let replace = state.replacement.replace(/&/g, '&amp;');
+      replace = state.replacement.replace(/</g, '&lt;');
+      state.outputDisplay = input.replace(regex, `<mark>${replace}</mark>`);
+    } else {
+      state.outputDisplay = input.replace(regex, '');
+    }
+    
     break;
 
   case 'useReplacements':
     state.input = state.output;
-    state.output='';
+    state.output=state.outputDisplay='';
     state.replacement='';
     state.showMatches=false;
     break;
@@ -97,12 +124,17 @@ function reducer(state2, action) {
     state.showMatches=false;
     break;
 
+  case 'setInput':
+    state.input = action.data;
+    state.showMatches=false;
+    break;
+    
   case 'setData':
     state[action.key] = action.value;
     break;
 
   }
-  
+
   return state;
 }
 
