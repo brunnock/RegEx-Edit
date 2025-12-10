@@ -4,6 +4,16 @@ div {
 
 #topButtons {
     margin:0;
+    display:grid;
+    grid-template-columns: auto auto;
+}
+
+#topButtons div {
+    margin:0;
+}
+
+#renderCheckDiv {
+    justify-self:center;
 }
 
 #topButtons label {
@@ -29,16 +39,27 @@ textarea, pre, iframe {
 }
 
 #regexDIV {
+    display:grid;
+    grid-template-columns: 40% auto 40%;
+    justify-items: center;
+}
+
+#firstRegexDIV {
     display:flex;
-    justify-content:space-around;
+    flex-direction:row;
+    flex-wrap:wrap;
 }
 
-.buttonsDIV {
-    text-align:center;
+#matchbox {
+    padding-right:1em;
 }
 
-.buttonsDIV button, .buttonsDIV label {
-    margin:0 1ex;
+#flags label {
+    padding:0 .5ex;
+}
+
+#regexDIV div {
+    margin:0;
 }
 
 label {

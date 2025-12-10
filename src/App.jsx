@@ -36,12 +36,16 @@ function App() {
     <>
       
       <div id='topButtons'>
-	<button onClick={getURL}>Fetch URL</button>
-	{' or '}
-	<input type="file" id="file-input" onChange={handleFile} />
-	<label>
-          Render HTML<input type="checkbox" name="htmlCheckbox" value={state.renderHTML} onChange={e=>setData('renderHTML', e.target.checked)} />
-	</label>
+	<div id='fetchButtonsDiv'>
+	  <button onClick={getURL}>Fetch URL</button>
+	  {' or '}
+	  <input type="file" id="file-input" onChange={handleFile} />
+	</div>
+	<div id='renderCheckDiv'>
+	  <label>
+            Render HTML<input type="checkbox" name="htmlCheckbox" value={state.renderHTML} onChange={e=>setData('renderHTML', e.target.checked)} />
+	  </label>
+	</div>
       </div>
       
       <div id='IO'>
@@ -61,73 +65,76 @@ function App() {
 	}
       </div>
       
+
       <div id='regexDIV'>
 
-	<label>Match
-	  <input type="text" onChange={e=>setData('regex', e.target.value)} />
-	  {state.regexError && <abbr title={state.regexError}>error</abbr>}
-	</label>
+	<div id='firstRegexDIV'>
+	  <div id='matchbox'>
+	    <label>Match
+	      <input type="text" onChange={e=>setData('regex', e.target.value)} />
+	      {state.regexError && <abbr title={state.regexError}>error</abbr>}
+	    </label>
+	  </div>
 
-	<label>Replace with
-	  <input type="text" value={state.replacement}
-		 onChange={e=>setData('replacement', e.target.value)} />
-	</label>
+	  <div id="flags">
+	    <label>
+              g<input type="checkbox" checked={state.global} onChange={e=>setData('global', e.target.checked)} />
+	    </label>
+
+	    <label>
+              i<input type="checkbox" checked={state.insensitive} onChange={e=>setData('insensitive', e.target.checked)} />
+	    </label>
+
+	    <label>
+              s<input type="checkbox" checked={state.dotall} onChange={e=>setData('dotall', e.target.checked)} />
+	    </label>
+
+	    <label>
+              m<input type="checkbox" checked={state.multiline} onChange={e=>setData('multiline', e.target.checked)} />
+	    </label>
+	  </div>
+	</div>
+
+	<div>
+	  {(state.showMatches) ?
+	   <button onClick={()=>dispatch({type:'edit'})}>Edit</button>
+	   :
+	   <button onClick={()=>dispatch({type:'match'})}>Match</button>
+	  }
+	
+	  <button onClick={()=>dispatch({type:'extract'})}>Extract</button>
+	  <button onClick={()=>dispatch({type:'replace'})}>Replace</button>
+
+	  {state.output.length>1 &&
+	   <button onClick={()=>dispatch({type:'save', sessionID:sessionStorage.length+1})}>Save</button>}
+
+	  {state.buffers.length>0 &&
+	   <>
+	     <button onClick={()=>dispatch({type:'load'})}>Load Buffer</button>
+	     <select id="bufferSelect" onChange={e=>setData('buffer',e.target.value)}>
+	       {state.buffers.map(x => <option key={x} value={x}>{x}</option>)}
+	     </select>
+	     <button onClick={()=>dispatch({type:'clear'})}>Clear Buffers</button>
+	   </>
+	  }
+	</div>	
+	  
+	<div>
+	  <label>Replace with
+	    <input type="text" value={state.replacement}
+		   onChange={e=>setData('replacement', e.target.value)} />
+	  </label>
+
+	  {state.output.length>1 &&
+	   <button onClick={()=>dispatch({type:'useReplacements'})}>Use replacements</button>}
+	
+	  {state?.extractions?.length>1 &&
+	   <button onClick={()=>dispatch({type:'useExtractions'})}>Use extractions</button>}
+
+	</div>
 
       </div>
-      
-      <div className='buttonsDIV'>
-
-	{(state.showMatches) ?
-	 <button onClick={()=>dispatch({type:'edit'})}>Edit</button>
-	 :
-	 <button onClick={()=>dispatch({type:'match'})}>Match</button>
-	}
-
-	<button onClick={()=>dispatch({type:'extract'})}>Extract</button>
-	<button onClick={()=>dispatch({type:'replace'})}>Replace</button>
-
-	{state.output.length>1 &&
-	 <button onClick={()=>dispatch({type:'save', sessionID:sessionStorage.length+1})}>Save</button>}
-
-	{state.buffers.length>0 &&
-	 <>
-	   <button onClick={()=>dispatch({type:'load'})}>Load Buffer</button>
-	   <select id="bufferSelect" onChange={e=>setData('buffer',e.target.value)}>
-	     {state.buffers.map(x => <option key={x} value={x}>{x}</option>)}
-	   </select>
-	   <button onClick={()=>dispatch({type:'clear'})}>Clear Buffers</button>
-	 </>
-	}
-	
-
-	{state.output.length>1 &&
-	 <button onClick={()=>dispatch({type:'useReplacements'})}>Use replacements</button>}
-	
-	{state?.extractions?.length>1 &&
-	 <button onClick={()=>dispatch({type:'useExtractions'})}>Use extractions</button>}
-	
-      </div>
-      
-      <div className='buttonsDIV'>
-	<label>
-          g<input type="checkbox" checked={state.global} onChange={e=>setData('global', e.target.checked)} />
-	</label>
-
-	<label>
-          i<input type="checkbox" checked={state.insensitive} onChange={e=>setData('insensitive', e.target.checked)} />
-	</label>
-
-	<label>
-          s<input type="checkbox" checked={state.dotall} onChange={e=>setData('dotall', e.target.checked)} />
-	</label>
-
-	<label>
-          m<input type="checkbox" checked={state.multiline} onChange={e=>setData('multiline', e.target.checked)} />
-	</label>
-      </div>
-
-      
-      </>
+    </>
   )
 }
 
