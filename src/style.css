@@ -71,3 +71,14 @@ label abbr {
     font-size:90%;
     padding-left:.5ex;
 }
+
+#helpPopover {
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%);
+}
+
+#helpPopover button {
+    float:right;
+}

@@ -117,6 +117,16 @@ function App() {
 	     <button onClick={()=>dispatch({type:'clear'})}>Clear Buffers</button>
 	   </>
 	  }
+	  <button popovertarget="helpPopover" popovertargetaction="show">?</button>
+	  <div popover="manual" id="helpPopover">
+	    <button popovertarget="helpPopover" popovertargetaction="hide">X</button>
+	    <p>Enter or load text in the left panel.</p>
+	    <p>Enter a regular expression in the box labelled <i>Match</i>. Matching text will be highlighted. </p>
+	    <p>You can <i>extract</i> or <i>replace</i> the pattern with the regular expression in the box labelled <i>Replace with</i>.</p>
+	    <p>After extracting or replacing, you can choose either <i>Use extractions</i> or <i>Use replacements</i> to the contents of the right panel into the left.</p>
+	    <p>You can also use the <i>Copy</i> button to copy the contents of the right panel to your clipboard.</p>
+	    <p><a href="https://sean.brunnock.com/Javascript/RegEx/syntax.html">Regular Expression Syntax</a></p>
+	  </div>
 	</div>	
 	  
 	<div>
@@ -125,11 +135,17 @@ function App() {
 		   onChange={e=>setData('replacement', e.target.value)} />
 	  </label>
 
-	  {state.output.length>1 &&
-	   <button onClick={()=>dispatch({type:'useReplacements'})}>Use replacements</button>}
-	
-	  {state?.extractions?.length>1 &&
-	   <button onClick={()=>dispatch({type:'useExtractions'})}>Use extractions</button>}
+	  {(state.outputType==='replace' && state.output.length>1) &&
+	   <>
+	     <button onClick={()=>dispatch({type:'useReplacements'})}>Use replacements</button>
+	     <button onClick={()=>navigator.clipboard.writeText(state.output)}>Copy</button>
+	   </>}
+	     
+	  {(state.outputType==='extract' && state?.extractions?.length>1) &&
+	   <>
+	     <button onClick={()=>dispatch({type:'useExtractions'})}>Use extractions</button>
+	     <button onClick={()=>navigator.clipboard.writeText(state.extractions)}>Copy</button>
+	   </>}
 
 	</div>
 

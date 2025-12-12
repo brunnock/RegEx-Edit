@@ -2,6 +2,7 @@ function init () {
   return {
     input:'',
     output:'',
+    outputType:null,
     regex:'',
     replacement:'',
     regexError:null,
@@ -42,6 +43,13 @@ function reducer(state2, action) {
     }
   }
 
+
+  function html2raw (html) {
+    // convert HTML to nonrendering text
+    let raw = html.replace(/&/g, '&amp;');
+    raw = raw.replace(/</g, '&lt;');
+    return raw;
+  }
   
   switch (action.type) {
 
@@ -92,8 +100,11 @@ function reducer(state2, action) {
     regex = new RegExp(state.regex, state.flags);
     state.extractions = state.input.match(regex).join("\n");
     state.output='';
-    if (state.extractions?.length>0) 
-      state.outputDisplay = state.input.match(regex).join("<br />");
+    if (state.extractions?.length>0) {
+      state.output = state.input.match(regex).join("\n");
+      state.outputDisplay = html2raw(state.output);
+      state.outputType='extract';
+    }
     break;
 
   case 'replace':
@@ -114,6 +125,7 @@ function reducer(state2, action) {
       state.outputDisplay = input.replace(regex, '');
     }
 
+    state.outputType='replace';
     state.extractions='';
     
     break;
