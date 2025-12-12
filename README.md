@@ -7,3 +7,5 @@ It uses React and no other libraries.
 Download and install with ```npm install```.
 
 Test with ```npm run dev``` and build with ```npm run build```.
+
+Try the demo at https://sean.brunnock.com/React/RegexEdit/ .
