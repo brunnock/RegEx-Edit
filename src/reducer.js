@@ -26,7 +26,8 @@ function reducer(state2, action) {
   let regex=null;
   let flags='';
   let matches = null;
-
+  let replacement=null;
+  
   function showMatches() {
     // FIX!
     try {
@@ -46,13 +47,21 @@ function reducer(state2, action) {
 
   function html2raw (html) {
     // convert HTML to nonrendering text
-    let raw = html.replace(/&/g, '&amp;');
-    raw = raw.replace(/</g, '&lt;');
-    return raw;
+    return html
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;');
   }
+
+  function normalizeEscapes(input) {
+    // following from chatgpt
+    return input
+      .replace(/\\n/g, "\n")
+      .replace(/\\t/g, "\t")
+      .replace(/\\r/g, "\r");
+  }
+
   
   switch (action.type) {
-
     
   case 'clear':
     sessionStorage.clear();
@@ -110,17 +119,20 @@ function reducer(state2, action) {
   case 'replace':
     // the following 2 lines do a straightforward replacement
     regex = new RegExp(state.regex, state.flags);
-    state.output = state.input.replace(regex, state.replacement);
-
+    replacement = normalizeEscapes(state.replacement);
+    state.output = state.input.replace(regex, replacement);
+    
     // for outputDisplay, neuter the HTML
     input = state.input.replace(/&/g, '&amp;'); // escape the &
     input = input.replace(/</g, '&lt;'); // escape the <
     regex = state.regex.replace(/</g, '&lt;');
     regex = new RegExp(`(${regex})`, state.flags);
     if (state.replacement.length>0) {
-      let replace = state.replacement.replace(/&/g, '&amp;');
-      replace = state.replacement.replace(/</g, '&lt;');
-      state.outputDisplay = input.replace(regex, `<mark>${replace}</mark>`);
+      //let replace = state.replacement.replace(/&/g, '&amp;');
+      //replace = state.replacement.replace(/</g, '&lt;');
+      replacement = html2raw(state.replacement);
+      replacement = normalizeEscapes(replacement);
+      state.outputDisplay = input.replace(regex, `<mark>${replacement}</mark>`);
     } else {
       state.outputDisplay = input.replace(regex, '');
     }
@@ -157,6 +169,7 @@ function reducer(state2, action) {
     break;
     
   case 'setData':
+    console.log(action.value);
     state[action.key] = action.value;
     break;
 
