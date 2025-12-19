@@ -28,7 +28,6 @@ function reducer(state2, action) {
   let replacement=null;
   
   function showMatches() {
-    // FIX!
     try {
       // replace < in regex with &lt;
       input = state.input.replace(/&/g, '&amp;'); // escape the &
@@ -125,7 +124,8 @@ function reducer(state2, action) {
     input = state.input.replace(/&/g, '&amp;'); // escape the &
     input = input.replace(/</g, '&lt;'); // escape the <
     regex = state.regex.replace(/</g, '&lt;');
-    regex = new RegExp(`(${regex})`, state.flags);
+    //regex = new RegExp(`(${regex})`, state.flags);
+    regex = new RegExp(regex, state.flags);
     if (state.replacement.length>0) {
       //let replace = state.replacement.replace(/&/g, '&amp;');
       //replace = state.replacement.replace(/</g, '&lt;');
