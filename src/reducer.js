@@ -20,7 +20,6 @@ function init () {
 
 
 function reducer(state2, action) {
-  //console.log(action);
   let state = structuredClone(state2);
   let input=null;
   let regex=null;
@@ -169,7 +168,6 @@ function reducer(state2, action) {
     break;
     
   case 'setData':
-    console.log(action.value);
     state[action.key] = action.value;
     break;
 
